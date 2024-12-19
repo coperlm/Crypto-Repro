@@ -2,6 +2,8 @@
 File: main.py
 Author: coperlm
 Date Created: 2024-12-18
+Resource: Chameleon-Hashes with Ephemeral Trapdoors And Applications to Invisible Sanitizable Signatures - 4.2
+Remark: 
 """
 from MyCode import get_g , SM3
 from Crypto.Util.number import *
