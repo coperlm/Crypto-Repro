@@ -9,6 +9,8 @@ from MyCode import get_g , SM3
 from Crypto.Util.number import *
 from gmpy2 import invert
 import random
+import time
+
 
 def CParGen( l ):
     p = getPrime( l )
@@ -81,8 +83,8 @@ def CHashCheck( param , pi_pk , m , tuple1 , tuple2 ):
 def Adapt( param , C , m , m2 , pp , sk_enc , pk_enc , etd , x , msg_tuple ):
     g , p = param
     q = p-1
-    if CHashCheck( *msg_tuple ) != True:
-        return False
+    # if CHashCheck( *msg_tuple ) != True:
+    #     return False
     c1 , c2 = C
     s = pow( c1 , sk_enc , p )
     r = c2*invert(s,p)%p
@@ -106,18 +108,29 @@ if __name__ == '__main__':
     param , crs = CParGen( 512 )
     (x,sk_enc),(h,pi_pk,pk_enc) = CKGen( param )
     m = "窝药次冰70!"
-    (b,h2,pi_t),(pp,C,pi_p),etd = CHash( param , h , pi_pk , pk_enc , m )
+    time1 = time.time()
+    cnt = 1
+    while cnt < 10000:
+        cnt += 1
+        (b,h2,pi_t),(pp,C,pi_p),etd = CHash( param , h , pi_pk , pk_enc , m )
+    time2 = time.time()
     msg_tuple1 = (param , pi_pk , m , ( pp , C , pi_p ) , ( b , h2 , pi_t ))
-    if CHashCheck( *msg_tuple1  ):
+    if CHashCheck( *msg_tuple1 ):
         print("验证成功")
     else:
         print("验证失败")
         assert 0
     m2 = "泥也药次冰70?"
-    pp2 , C2 , pi_p2 , b2 , pi_t2 = Adapt( param , C , m , m2 , pp , sk_enc , pk_enc , etd , x , msg_tuple1 )
+    time3 = time.time()
+    cnt = 1
+    while cnt < 10000:
+        cnt += 1
+        pp2 , C2 , pi_p2 , b2 , pi_t2 = Adapt( param , C , m , m2 , pp , sk_enc , pk_enc , etd , x , msg_tuple1 )
+    time4 = time.time()
     if CHashCheck( param , pi_pk , m2 , ( pp2 , C2 , pi_p2 ) , ( b2 , h2 , pi_t2 ) ):
         print("碰撞成功")
     else:
         print("碰撞失败")
         assert 0
+    print( time2 - time1 , time4 - time3 )
     exit(0)
